@@ -5,6 +5,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame_showcase/components/backyard.dart';
 import 'package:flame_showcase/components/fly.dart';
+import 'package:flame_showcase/components/house-fly.dart';
 import 'package:flutter/gestures.dart';
 
 class MainGame extends Game {
@@ -47,7 +48,7 @@ class MainGame extends Game {
   void spawnFly() {
     double x = rnd.nextDouble() * (screenSize.width - tileSize);
     double y = rnd.nextDouble() * (screenSize.height - tileSize);
-    flies.add(Fly(this, x, y));
+    flies.add(HouseFly(this, x, y));
   }
 
   void onTapDown(TapDownDetails d) {
