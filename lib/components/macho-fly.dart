@@ -6,6 +6,8 @@ import 'package:flame_showcase/games/main_game.dart';
 import 'fly.dart';
 
 class MachoFly extends Fly {
+  double get speed => game.tileSize * 2.5;
+
   MachoFly(MainGame game, double x, double y) : super(game) {
     flyingSprite = List();
     flyingSprite.add(Sprite('flies/macho-fly-1.png'));

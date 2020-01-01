@@ -6,6 +6,8 @@ import 'package:flame_showcase/games/main_game.dart';
 import 'fly.dart';
 
 class DroolerFly extends Fly {
+  double get speed => game.tileSize * 1.5;
+
   DroolerFly(MainGame game, double x, double y) : super(game) {
     flyingSprite = List();
     flyingSprite.add(Sprite('flies/drooler-fly-1.png'));
