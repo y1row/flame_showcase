@@ -12,6 +12,7 @@ import 'package:flame_showcase/components/hungry-fly.dart';
 import 'package:flame_showcase/components/macho-fly.dart';
 import 'package:flame_showcase/components/start-button.dart';
 import 'package:flame_showcase/views/home-view.dart';
+import 'package:flame_showcase/views/lost-view.dart';
 import 'package:flutter/gestures.dart';
 
 import '../view.dart';
@@ -24,6 +25,7 @@ class MainGame extends Game {
   Backyard background;
   View activeView = View.home;
   HomeView homeView;
+  LostView lostView;
   StartButton startButton;
 
   MainGame() {
@@ -36,6 +38,7 @@ class MainGame extends Game {
     rnd = Random();
 
     homeView = HomeView(this);
+    lostView = LostView(this);
     startButton = StartButton(this);
 
     background = Backyard(this);
@@ -53,6 +56,7 @@ class MainGame extends Game {
     background.render(canvas);
     flies.forEach((Fly fly) => fly.render(canvas));
     if (activeView == View.home) homeView.render(canvas);
+    if (activeView == View.lost) lostView.render(canvas);
     if (activeView == View.home || activeView == View.lost) {
       startButton.render(canvas);
     }
@@ -95,11 +99,16 @@ class MainGame extends Game {
       }
     }
     if (!isHandled) {
+      bool didHitAFly = false;
       flies.forEach((Fly fly) {
         if (fly.flyRect.contains(d.globalPosition)) {
           fly.onTapDown();
+          didHitAFly = true;
         }
       });
+      if (activeView == View.playing && !didHitAFly) {
+        activeView = View.lost;
+      }
     }
   }
 }
