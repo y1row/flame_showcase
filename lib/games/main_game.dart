@@ -10,7 +10,10 @@ import 'package:flame_showcase/components/fly.dart';
 import 'package:flame_showcase/components/house-fly.dart';
 import 'package:flame_showcase/components/hungry-fly.dart';
 import 'package:flame_showcase/components/macho-fly.dart';
+import 'package:flame_showcase/views/home-view.dart';
 import 'package:flutter/gestures.dart';
+
+import '../view.dart';
 
 class MainGame extends Game {
   Size screenSize;
@@ -18,6 +21,8 @@ class MainGame extends Game {
   Random rnd;
   List<Fly> flies;
   Backyard background;
+  View activeView = View.home;
+  HomeView homeView;
 
   MainGame() {
     initialize();
@@ -27,6 +32,8 @@ class MainGame extends Game {
     flies = List<Fly>();
     resize(await Flame.util.initialDimensions());
     rnd = Random();
+
+    homeView = HomeView(this);
 
     background = Backyard(this);
     spawnFly();
@@ -42,6 +49,7 @@ class MainGame extends Game {
   void render(Canvas canvas) {
     background.render(canvas);
     flies.forEach((Fly fly) => fly.render(canvas));
+    if (activeView == View.home) homeView.render(canvas);
   }
 
   void update(double t) {
