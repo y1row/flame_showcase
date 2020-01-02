@@ -12,6 +12,7 @@ import 'package:flame_showcase/components/help-button.dart';
 import 'package:flame_showcase/components/house-fly.dart';
 import 'package:flame_showcase/components/hungry-fly.dart';
 import 'package:flame_showcase/components/macho-fly.dart';
+import 'package:flame_showcase/components/score-display.dart';
 import 'package:flame_showcase/components/start-button.dart';
 import 'package:flame_showcase/controllers/spawner.dart';
 import 'package:flame_showcase/views/credits-view.dart';
@@ -37,12 +38,15 @@ class MainGame extends Game {
   StartButton startButton;
   HelpButton helpButton;
   CreditsButton creditsButton;
+  ScoreDisplay scoreDisplay;
+  int score;
 
   MainGame() {
     initialize();
   }
 
   void initialize() async {
+    score = 0;
     flies = List<Fly>();
     resize(await Flame.util.initialDimensions());
     rnd = Random();
@@ -54,6 +58,7 @@ class MainGame extends Game {
     startButton = StartButton(this);
     helpButton = HelpButton(this);
     creditsButton = CreditsButton(this);
+    scoreDisplay = ScoreDisplay(this);
 
     background = Backyard(this);
     spawner = FlySpawner(this);
@@ -68,6 +73,7 @@ class MainGame extends Game {
 
   void render(Canvas canvas) {
     background.render(canvas);
+    if (activeView == View.playing) scoreDisplay.render(canvas);
     flies.forEach((Fly fly) => fly.render(canvas));
     if (activeView == View.home) homeView.render(canvas);
     if (activeView == View.lost) lostView.render(canvas);
@@ -84,6 +90,7 @@ class MainGame extends Game {
     spawner.update(t);
     flies.forEach((Fly fly) => fly.update(t));
     flies.removeWhere((Fly fly) => fly.isOffScreen);
+    if (activeView == View.playing) scoreDisplay.update(t);
   }
 
   void spawnFly() {

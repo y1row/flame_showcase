@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flame/sprite.dart';
 import 'package:flame_showcase/games/main_game.dart';
 
+import '../view.dart';
+
 class Fly {
   final MainGame game;
   List<Sprite> flyingSprite;
@@ -55,6 +57,9 @@ class Fly {
   void onTapDown() {
     if (isDead) return;
     isDead = true;
+    if (game.activeView == View.playing) {
+      game.score += 1;
+    }
   }
 
   void setTargetLocation() {
