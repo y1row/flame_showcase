@@ -5,13 +5,17 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame_showcase/components/agile-fly.dart';
 import 'package:flame_showcase/components/backyard.dart';
+import 'package:flame_showcase/components/credits-button.dart';
 import 'package:flame_showcase/components/drooler-fly.dart';
 import 'package:flame_showcase/components/fly.dart';
+import 'package:flame_showcase/components/help-button.dart';
 import 'package:flame_showcase/components/house-fly.dart';
 import 'package:flame_showcase/components/hungry-fly.dart';
 import 'package:flame_showcase/components/macho-fly.dart';
 import 'package:flame_showcase/components/start-button.dart';
 import 'package:flame_showcase/controllers/spawner.dart';
+import 'package:flame_showcase/views/credits-view.dart';
+import 'package:flame_showcase/views/help-view.dart';
 import 'package:flame_showcase/views/home-view.dart';
 import 'package:flame_showcase/views/lost-view.dart';
 import 'package:flutter/gestures.dart';
@@ -28,7 +32,11 @@ class MainGame extends Game {
   View activeView = View.home;
   HomeView homeView;
   LostView lostView;
+  HelpView helpView;
+  CreditsView creditsView;
   StartButton startButton;
+  HelpButton helpButton;
+  CreditsButton creditsButton;
 
   MainGame() {
     initialize();
@@ -41,7 +49,11 @@ class MainGame extends Game {
 
     homeView = HomeView(this);
     lostView = LostView(this);
+    helpView = HelpView(this);
+    creditsView = CreditsView(this);
     startButton = StartButton(this);
+    helpButton = HelpButton(this);
+    creditsButton = CreditsButton(this);
 
     background = Backyard(this);
     spawner = FlySpawner(this);
@@ -61,7 +73,11 @@ class MainGame extends Game {
     if (activeView == View.lost) lostView.render(canvas);
     if (activeView == View.home || activeView == View.lost) {
       startButton.render(canvas);
+      helpButton.render(canvas);
+      creditsButton.render(canvas);
     }
+    if (activeView == View.help) helpView.render(canvas);
+    if (activeView == View.credits) creditsView.render(canvas);
   }
 
   void update(double t) {
@@ -95,17 +111,46 @@ class MainGame extends Game {
 
   void onTapDown(TapDownDetails d) {
     bool isHandled = false;
+
+    // dialog boxes
+    if (!isHandled) {
+      if (activeView == View.help || activeView == View.credits) {
+        activeView = View.home;
+        isHandled = true;
+      }
+    }
+
+    // help button
+    if (!isHandled && helpButton.rect.contains(d.globalPosition)) {
+      if (activeView == View.home || activeView == View.lost) {
+        helpButton.onTapDown();
+        isHandled = true;
+      }
+    }
+
+    // credits button
+    if (!isHandled && creditsButton.rect.contains(d.globalPosition)) {
+      if (activeView == View.home || activeView == View.lost) {
+        creditsButton.onTapDown();
+        isHandled = true;
+      }
+    }
+
+    // start button
     if (!isHandled && startButton.rect.contains(d.globalPosition)) {
       if (activeView == View.home || activeView == View.lost) {
         startButton.onTapDown();
         isHandled = true;
       }
     }
+
+    // flies
     if (!isHandled) {
       bool didHitAFly = false;
       flies.forEach((Fly fly) {
         if (fly.flyRect.contains(d.globalPosition)) {
           fly.onTapDown();
+          isHandled = true;
           didHitAFly = true;
         }
       });
