@@ -11,6 +11,7 @@ import 'package:flame_showcase/components/house-fly.dart';
 import 'package:flame_showcase/components/hungry-fly.dart';
 import 'package:flame_showcase/components/macho-fly.dart';
 import 'package:flame_showcase/components/start-button.dart';
+import 'package:flame_showcase/controllers/spawner.dart';
 import 'package:flame_showcase/views/home-view.dart';
 import 'package:flame_showcase/views/lost-view.dart';
 import 'package:flutter/gestures.dart';
@@ -21,6 +22,7 @@ class MainGame extends Game {
   Size screenSize;
   double tileSize;
   Random rnd;
+  FlySpawner spawner;
   List<Fly> flies;
   Backyard background;
   View activeView = View.home;
@@ -42,7 +44,7 @@ class MainGame extends Game {
     startButton = StartButton(this);
 
     background = Backyard(this);
-    spawnFly();
+    spawner = FlySpawner(this);
   }
 
   @override
@@ -63,6 +65,7 @@ class MainGame extends Game {
   }
 
   void update(double t) {
+    spawner.update(t);
     flies.forEach((Fly fly) => fly.update(t));
     flies.removeWhere((Fly fly) => fly.isOffScreen);
   }
